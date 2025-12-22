@@ -1,0 +1,25 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<BaseLayout title="Write for Us · ML Mondays" description="How to contribute your own ML Mondays blog to Neural Hive.">
+  <Navbar slot="navbar" />
+  <section>
+    <h1>Write for ML Mondays</h1>
+    <p>
+      This page should clearly explain how someone can pitch and submit a blog post for ML Mondays.
+    </p>
+    <p>
+      Example flow (you should customize based on your actual process):
+    </p>
+    <ol>
+      <li>Prepare a short outline and title.</li>
+      <li>Fill out a Google Form or contact us via email/Discord.</li>
+      <li>On approval, you'll get a template and guidelines.</li>
+      <li>We review, edit, and schedule your post for a Monday slot.</li>
+    </ol>
+  </section>
+  <Footer slot="footer" />
+</BaseLayout>

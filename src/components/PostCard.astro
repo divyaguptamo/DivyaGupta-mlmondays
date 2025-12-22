@@ -1,0 +1,117 @@
+---
+const { post } = Astro.props;
+
+// Generate a gradient based on tags or post title
+const gradients = [
+  'linear-gradient(135deg, rgba(192, 38, 211, 0.1), rgba(139, 92, 246, 0.1))',
+  'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1))',
+  'linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(192, 38, 211, 0.1))',
+  'linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(139, 92, 246, 0.1))',
+];
+const gradientIndex = Math.abs(post.data.title.length % gradients.length);
+const cardGradient = gradients[gradientIndex];
+
+// Get the URL - handle both slug and url properties
+const postUrl = post.url || `/posts/${post.slug}`;
+---
+
+<article class="post-card glass-card card-hover animate-scale-in" style={`position:relative; padding:1.5rem; overflow:hidden;`}>
+  <!-- Gradient Background -->
+  <div class="card-gradient" style={`position:absolute; inset:0; background:${cardGradient}; opacity:0; transition:opacity 0.4s; z-index:0;`}></div>
+  
+  <!-- Corner Accent -->
+  <div class="corner-accent" style="position:absolute; top:0; right:0; width:60px; height:60px; background:var(--gradient-primary); opacity:0.1; border-radius:0 20px 0 100%; transition:all 0.4s;"></div>
+  
+  <!-- Content -->
+  <div style="position:relative; z-index:1;">
+    <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:0.75rem;">
+      <span class="badge" style="animation:fadeIn 0.6s ease forwards; animation-delay:0.2s; opacity:0;">
+        ML Mondays
+      </span>
+      {post.data.tags && post.data.tags.length > 0 && (
+        <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+          {post.data.tags.slice(0, 2).map(tag => (
+            <span style="font-size:0.7rem; padding:0.2rem 0.6rem; border-radius:999px; background:rgba(139, 92, 246, 0.15); color:var(--accent-tertiary); font-weight:500; border:1px solid var(--border);">
+              #{tag}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+    
+    <a href={postUrl} style="text-decoration:none;">
+      <h2 style="margin:0 0 0.6rem 0; font-size:1.25rem; font-weight:700; letter-spacing:-0.02em; line-height:1.3; color:var(--text); transition:color 0.3s;">
+        {post.data.title}
+      </h2>
+    </a>
+    
+    {post.data.excerpt && (
+      <p style="margin:0 0 1rem 0; font-size:0.9rem; color:var(--muted); line-height:1.6;">
+        {post.data.excerpt}
+      </p>
+    )}
+    
+    <div style="display:flex; justify-content:space-between; align-items:center; padding-top:0.75rem; border-top:1px solid var(--border);">
+      <div style="display:flex; align-items:center; gap:0.5rem;">
+        <div style="width:28px; height:28px; border-radius:999px; background:var(--gradient-primary); display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; color:white;">
+          {post.data.author.charAt(0).toUpperCase()}
+        </div>
+        <div>
+          <p style="font-size:0.8rem; font-weight:600; color:var(--text); margin:0;">
+            {post.data.author}
+          </p>
+          <p style="font-size:0.7rem; color:var(--muted); margin:0;">
+            {post.data.date}
+          </p>
+        </div>
+      </div>
+      
+      <a 
+        href={postUrl}
+        class="read-more"
+        style="display:flex; align-items:center; gap:0.3rem; font-size:0.85rem; font-weight:600; color:var(--accent-primary); padding:0.4rem 0.8rem; border-radius:8px; border:1px solid var(--border); transition:all 0.3s;"
+        aria-label={`Read ${post.data.title}`}
+      >
+        Read
+        <span style="transition:transform 0.3s;">→</span>
+      </a>
+    </div>
+  </div>
+</article>
+
+<style>
+  .post-card:hover .card-gradient {
+    opacity: 1;
+  }
+  
+  .post-card:hover .corner-accent {
+    width: 80px;
+    height: 80px;
+    opacity: 0.2;
+  }
+  
+  .post-card:hover h2 {
+    color: var(--accent-primary);
+  }
+  
+  .post-card:hover .read-more {
+    background: var(--gradient-primary);
+    color: white;
+    border-color: transparent;
+    transform: translateX(2px);
+  }
+  
+  .post-card:hover .read-more span {
+    transform: translateX(4px);
+  }
+  
+  @media (max-width: 640px) {
+    .post-card {
+      padding: 1.25rem;
+    }
+    
+    .post-card h2 {
+      font-size: 1.1rem;
+    }
+  }
+</style>

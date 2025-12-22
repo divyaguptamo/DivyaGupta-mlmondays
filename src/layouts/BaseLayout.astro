@@ -1,0 +1,22 @@
+---
+const { title = "ML Mondays – Neural Hive", description = "Neural Hive's ML Mondays blog space." } = Astro.props;
+import "../styles/global.css";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <div style="max-width: 960px; margin: 0 auto; padding: 1.5rem;">
+      <slot name="navbar" />
+      <main style="margin-top: 1.5rem;">
+        <slot />
+      </main>
+      <slot name="footer" />
+    </div>
+  </body>
+</html>

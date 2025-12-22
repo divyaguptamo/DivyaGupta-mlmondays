@@ -1,0 +1,22 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<BaseLayout title="Ethos · ML Mondays" description="Principles and writing culture that shape ML Mondays at Neural Hive.">
+  <Navbar slot="navbar" />
+  <section>
+    <h1>Ethos</h1>
+    <p>
+      Use this page to define your writing culture: clarity, kindness, technical correctness, attribution, and accessibility.
+    </p>
+    <ul>
+      <li>Write for curious students, not only experts.</li>
+      <li>Prefer visual intuition and examples.</li>
+      <li>Cite papers, repos, and inspirations.</li>
+      <li>Encourage experimentation and honest learnings.</li>
+    </ul>
+  </section>
+  <Footer slot="footer" />
+</BaseLayout>

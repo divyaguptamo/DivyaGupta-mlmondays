@@ -1,0 +1,237 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import { getCollection } from "astro:content";
+
+// Get all posts
+let posts = [];
+let error = null;
+
+try {
+  posts = await getCollection("posts");
+  console.log("Total posts found:", posts.length);
+  console.log("Posts:", posts.map(p => ({ slug: p.slug, title: p.data.title })));
+} catch (e) {
+  error = e.message;
+  console.error("Error loading posts:", e);
+}
+
+const published = posts.filter((p) => !p.data.draft).sort((a, b) =>
+  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+console.log("Published posts:", published.length);
+---
+
+<BaseLayout title="ML Mondays · Neural Hive" description="Neural Hive's ML Mondays -- a weekly blog space for machine learning.">
+  <Navbar slot="navbar" />
+  
+  <!-- Debug Section -->
+  {error && (
+    <div style="background:red; color:white; padding:1rem; margin:1rem; border-radius:8px;">
+      <strong>Error loading posts:</strong> {error}
+    </div>
+  )}
+  
+  <div style="background:var(--bg-elevated); padding:1rem; margin:1rem; border-radius:8px; border:1px solid var(--border);">
+    <h3>Debug Info:</h3>
+    <p>Total posts found: {posts.length}</p>
+    <p>Published posts: {published.length}</p>
+    <p>Draft posts: {posts.filter(p => p.data.draft).length}</p>
+  </div>
+
+  <!-- Hero Section -->
+  <section style="margin-top:2rem; margin-bottom:3rem; position:relative;">
+    <div style="position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:0;">
+      <div style="position:absolute; top:10%; right:20%; width:300px; height:300px; background:radial-gradient(circle, rgba(192, 38, 211, 0.15), transparent 70%); border-radius:50%; filter:blur(60px); animation:float 6s ease-in-out infinite;"></div>
+      <div style="position:absolute; bottom:20%; left:10%; width:250px; height:250px; background:radial-gradient(circle, rgba(6, 182, 212, 0.15), transparent 70%); border-radius:50%; filter:blur(60px); animation:float 8s ease-in-out infinite reverse;"></div>
+    </div>
+    
+    <div class="glass-card animate-fade-in" style="padding:3rem 2rem; position:relative; overflow:hidden; z-index:1;">
+      <div style="position:absolute; inset:0; background:linear-gradient(135deg, rgba(192, 38, 211, 0.05), rgba(139, 92, 246, 0.05)); pointer-events:none;"></div>
+      
+      <div style="position:relative; z-index:1; max-width:800px; margin:0 auto; text-align:center;">
+        <div class="badge" style="margin-bottom:1rem;">
+          🚀 Neural Hive Initiative
+        </div>
+        
+        <h1 style="font-size:3rem; margin:0.5rem 0 1rem 0; font-weight:800; letter-spacing:-0.03em; line-height:1.1;" class="gradient-text">
+          Machine Learning,<br/>one Monday at a time
+        </h1>
+        
+        <p style="font-size:1.1rem; color:var(--muted); max-width:600px; margin:0 auto 2rem auto; line-height:1.7;">
+          A curated blog space where the Neural Hive community breaks down ML concepts, experiments, and ideas — focused, practical, and student-friendly.
+        </p>
+        
+        <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+          <a href="#posts" class="btn-primary" style="text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem;">
+            Read Articles
+            <span style="font-size:1.2rem;">↓</span>
+          </a>
+          <a 
+            href="/write-for-us" 
+            style="padding:0.75rem 1.5rem; border-radius:var(--radius-lg); border:2px solid var(--border); font-weight:600; transition:all 0.3s; display:inline-flex; align-items:center; gap:0.5rem; background:var(--bg-card);"
+            class="glass-card"
+          >
+            <span>✍️</span>
+            Write for Us
+          </a>
+        </div>
+        
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:1.5rem; margin-top:3rem; max-width:600px; margin-left:auto; margin-right:auto;">
+          <div style="text-align:center;">
+            <div style="font-size:2rem; font-weight:800;" class="gradient-text">{published.length}</div>
+            <div style="font-size:0.85rem; color:var(--muted); margin-top:0.25rem;">Articles</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:2rem; font-weight:800;" class="gradient-text">10k+</div>
+            <div style="font-size:0.85rem; color:var(--muted); margin-top:0.25rem;">Readers</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:2rem; font-weight:800;" class="gradient-text">Weekly</div>
+            <div style="font-size:0.85rem; color:var(--muted); margin-top:0.25rem;">Updates</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog Posts Section -->
+  <section id="posts" class="animate-fade-in animate-delay-1" style="scroll-margin-top:100px;">
+    <div style="margin-bottom:2rem;">
+      <h2 style="font-size:1.8rem; margin:0 0 0.5rem 0; font-weight:700;">Latest Articles</h2>
+      <p style="color:var(--muted); font-size:1rem; margin:0;">Deep dives into machine learning concepts</p>
+    </div>
+    
+    {published.length === 0 ? (
+      <div class="glass-card" style="padding:3rem; text-align:center;">
+        <span style="font-size:4rem; display:block; margin-bottom:1rem;">📝</span>
+        <h3 style="font-size:1.5rem; margin:0 0 0.5rem 0; color:var(--text);">No posts found</h3>
+        <p style="font-size:1rem; color:var(--muted); margin:0 0 1rem 0;">
+          Make sure your MDX files are in: <code>src/content/posts/</code>
+        </p>
+        <details style="text-align:left; margin-top:1rem; padding:1rem; background:var(--bg-elevated); border-radius:8px;">
+          <summary style="cursor:pointer; font-weight:600; margin-bottom:0.5rem;">Show file structure needed</summary>
+          <pre style="font-size:0.85rem; overflow-x:auto;"><code>src/
+├── content/
+│   └── posts/
+│       ├── generative-ai-fundamentals.mdx
+│       ├── deep-learning-fundamentals.mdx
+│       └── machine-learning-fundamentals.mdx</code></pre>
+        </details>
+      </div>
+    ) : (
+      <div style="display:flex; flex-direction:column; gap:3rem;">
+        {published.map((post, index) => (
+          <article class={`glass-card animate-scale-in animate-delay-${Math.min((index % 3) + 1, 3)}`} style="padding:2.5rem; position:relative; overflow:hidden;">
+            <div style="position:absolute; top:0; right:0; width:200px; height:200px; background:var(--gradient-primary); opacity:0.03; border-radius:0 20px 0 100%; pointer-events:none;"></div>
+            
+            <div style="position:relative; z-index:1;">
+              <!-- Header -->
+              <div style="margin-bottom:2rem; padding-bottom:1.5rem; border-bottom:2px solid var(--border);">
+                <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:1rem; flex-wrap:wrap; gap:1rem;">
+                  <div style="flex:1;">
+                    <span class="badge" style="margin-bottom:0.75rem; display:inline-block;">ML Mondays</span>
+                    <a href={`/posts/${post.slug}`} style="text-decoration:none;">
+                      <h3 style="font-size:2rem; margin:0.5rem 0; font-weight:800; letter-spacing:-0.02em; line-height:1.2; color:var(--text); transition:color 0.3s;">
+                        {post.data.title}
+                      </h3>
+                    </a>
+                  </div>
+                  {post.data.tags && post.data.tags.length > 0 && (
+                    <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                      {post.data.tags.map(tag => (
+                        <span style="font-size:0.8rem; padding:0.3rem 0.75rem; border-radius:999px; background:rgba(139, 92, 246, 0.15); color:var(--accent-tertiary); font-weight:500; border:1px solid var(--border);">
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                
+                <div style="display:flex; align-items:center; gap:1rem;">
+                  <div style="display:flex; align-items:center; gap:0.5rem;">
+                    <div style="width:36px; height:36px; border-radius:999px; background:var(--gradient-primary); display:flex; align-items:center; justify-content:center; font-size:0.9rem; font-weight:700; color:white;">
+                      {post.data.author.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <p style="font-size:0.9rem; font-weight:600; color:var(--text); margin:0;">
+                        {post.data.author}
+                      </p>
+                      <p style="font-size:0.8rem; color:var(--muted); margin:0;">
+                        {post.data.date}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Excerpt -->
+              {post.data.excerpt && (
+                <p style="font-size:1.1rem; line-height:1.8; color:var(--text-secondary); margin-bottom:1.5rem;">
+                  {post.data.excerpt}
+                </p>
+              )}
+              
+              <!-- Read More Button -->
+              <div style="display:flex; justify-content:flex-start; padding-top:1.5rem; border-top:1px solid var(--border);">
+                <a 
+                  href={`/posts/${post.slug}`}
+                  class="btn-primary"
+                  style="text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; font-size:1rem;"
+                >
+                  Read Full Article
+                  <span style="transition:transform 0.3s;">→</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    )}
+  </section>
+
+  <!-- CTA Section -->
+  <section class="glass-card animate-fade-in animate-delay-3" style="margin-top:4rem; padding:3rem 2rem; text-align:center; background:linear-gradient(135deg, rgba(192, 38, 211, 0.08), rgba(6, 182, 212, 0.08)); position:relative; overflow:hidden;">
+    <div style="position:absolute; inset:0; background:var(--gradient-glow); opacity:0.5; pointer-events:none;"></div>
+    
+    <div style="position:relative; z-index:1; max-width:600px; margin:0 auto;">
+      <span style="font-size:3rem; display:block; margin-bottom:1rem;">✍️</span>
+      <h2 style="font-size:2rem; margin:0 0 1rem 0; font-weight:700;">Share Your Knowledge</h2>
+      <p style="color:var(--muted); font-size:1.05rem; line-height:1.7; margin-bottom:2rem;">
+        Have an ML insight, tutorial, or experiment to share? Join our community of writers and help others learn.
+      </p>
+      <a href="/write-for-us" class="btn-primary" style="text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem;">
+        Start Writing
+        <span>→</span>
+      </a>
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<style>
+  .btn-primary:hover span {
+    transform: translateX(4px);
+  }
+  
+  article h3:hover {
+    color: var(--accent-primary);
+  }
+  
+  @media (max-width: 768px) {
+    h1 {
+      font-size: 2rem !important;
+    }
+    
+    article {
+      padding: 1.5rem !important;
+    }
+    
+    article h3 {
+      font-size: 1.5rem !important;
+    }
+  }
+</style>

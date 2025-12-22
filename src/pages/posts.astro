@@ -1,0 +1,45 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import PostCard from "../components/PostCard.astro";
+import { getCollection } from "astro:content";
+
+const posts = await getCollection("posts");
+const published = posts.filter((p) => !p.data.draft).sort((a, b) =>
+  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+---
+
+<BaseLayout title="All Posts · ML Mondays" description="Browse all ML Mondays blog posts from Neural Hive.">
+  <Navbar slot="navbar" />
+  <section class="animate-fade-in">
+    <div style="margin-bottom:2rem;">
+      <h1 style="font-size:2.5rem; margin:0 0 0.5rem 0; font-weight:800;" class="gradient-text">All Posts</h1>
+      <p style="color:var(--muted); font-size:1rem;">Every ML Mondays article, in one place. {published.length} {published.length === 1 ? 'post' : 'posts'} published.</p>
+    </div>
+    
+    {published.length > 0 ? (
+      <div style="display:grid; gap:1.5rem; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));">
+        {published.map((post, index) => (
+          <div class={`animate-scale-in animate-delay-${Math.min((index % 4) + 1, 4)}`}>
+            <PostCard post={{...post, url: `/posts/${post.slug}`}} />
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div class="glass-card" style="padding:4rem 2rem; text-align:center;">
+        <span style="font-size:4rem; display:block; margin-bottom:1rem;">📝</span>
+        <h2 style="font-size:1.5rem; margin:0 0 0.5rem 0; color:var(--text);">No posts yet</h2>
+        <p style="font-size:1rem; color:var(--muted); margin:0 0 1.5rem 0;">
+          Check back soon for exciting ML content!
+        </p>
+        <a href="/write-for-us" class="btn-primary" style="text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem;">
+          Be the First to Write
+          <span>→</span>
+        </a>
+      </div>
+    )}
+  </section>
+  <Footer slot="footer" />
+</BaseLayout>
