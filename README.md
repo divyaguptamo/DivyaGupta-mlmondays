@@ -118,14 +118,3 @@ GitHub: https://github.com/divyaguptamo
 
 This project is developed for educational and evaluation purposes as part of the Neural Hive recruitment challenge.
 
-## ✅ WHERE TO PASTE THIS
-- File name: **README.md**
-- Location: **Project root folder** (same level as `package.json`)
-
-After pasting, run:
-
-```bash
-git add README.md
-git commit -m "Add README"
-git push
-
